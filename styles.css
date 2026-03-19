@@ -1,9 +1,14 @@
 /* ── The Last footprint Awards — Styles ────────────────────────────── */
 
+html, body {
+    min-height: 100%;
+}
+
 body {
     background-color: #383838;
     color: #f8fafc;
-    overflow: hidden;
+    overflow-x: hidden;   /* no horizontal scroll */
+    overflow-y: auto;     /* allow vertical scroll on mobile */
     background-image:
         radial-gradient(circle at 15% 50%, rgba(68, 166, 204, 0.08), transparent 25%),
         radial-gradient(circle at 85% 30%, rgba(28, 80, 112, 0.2), transparent 25%);

@@ -1,0 +1,120 @@
+/* ── The Last footprint Awards — Styles ────────────────────────────── */
+
+body {
+    background-color: #383838;
+    color: #f8fafc;
+    overflow: hidden;
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(68, 166, 204, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(28, 80, 112, 0.2), transparent 25%);
+}
+
+#root {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Particle canvas ─────────────────────────────────────────────── */
+.particle-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* ── Glass panel ─────────────────────────────────────────────────── */
+.glass-panel {
+    background: rgba(28, 80, 112, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(68, 166, 204, 0.15);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ── Input ───────────────────────────────────────────────────────── */
+.input-premium {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f8fafc;
+    padding: 12px 16px;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.2s ease;
+    width: 100%;
+    font-family: 'JetBrains Mono', monospace;
+}
+.input-premium:focus {
+    border-color: #44a6cc;
+    box-shadow: 0 0 0 2px rgba(68, 166, 204, 0.2);
+    background: rgba(68, 166, 204, 0.05);
+}
+
+/* ── Button ──────────────────────────────────────────────────────── */
+.btn-premium {
+    background: linear-gradient(135deg, #44a6cc 0%, #1c5070 100%);
+    color: white;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(68, 166, 204, 0.3);
+    cursor: pointer;
+    border: none;
+}
+.btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(68, 166, 204, 0.5);
+}
+
+/* ── Countdown circle ────────────────────────────────────────────── */
+.countdown-circle {
+    stroke-dasharray: 283;
+    stroke-dashoffset: 283;
+    animation: dash 12s linear forwards;
+    transform-origin: center;
+    transform: rotate(-90deg);
+}
+@keyframes dash {
+    to { stroke-dashoffset: 0; }
+}
+
+/* ── Reveal animation ────────────────────────────────────────────── */
+.reveal-anim {
+    opacity: 0;
+    animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes slideUpFade {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── Winner cards ────────────────────────────────────────────────── */
+.winner-card { position: relative; }
+.winner-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px; bottom: -1px;
+    border-radius: 17px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.winner-card:hover::before { opacity: 1; }
+.winner-1::before { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+.winner-2::before { background: linear-gradient(135deg, #e2e8f0, #94a3b8); }
+.winner-3::before { background: linear-gradient(135deg, #fdba74, #b45309); }
+
+/* ── Rank text gradients ─────────────────────────────────────────── */
+.rank-number {
+    font-family: 'JetBrains Mono', monospace;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.rank-1-text { background-image: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); }
+.rank-2-text { background-image: linear-gradient(135deg, #f1f5f9 0%, #94a3b8 100%); }
+.rank-3-text { background-image: linear-gradient(135deg, #fdba74 0%, #b45309 100%); }

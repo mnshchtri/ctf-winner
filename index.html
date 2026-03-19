@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="bg-remove-logo.png">
-    <title>CyberX CTF Awards</title>
+    <link rel="icon" type="image/png" href="images/bg-remove-logo.png">
+    <title>The Last footprint Awards</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
@@ -26,10 +26,10 @@
                     },
                     colors: {
                         cyber: {
-                            base: '#030712', 
-                            panel: '#0f172a',
-                            border: '#1e293b',
-                            accent: '#06b6d4',
+                            base: '#383838', // Dark Grey
+                            accent: '#44a6cc', // Cyan/Light Blue
+                            secondary: '#1c5070', // Dark Blue
+                            alert: '#ae0001', // Red
                             glow: 'rgba(6, 182, 212, 0.4)',
                         }
                     },
@@ -49,32 +49,28 @@
     </script>
     <style>
         body {
-            background-color: #030712;
+            background-color: #383838;
             color: #f8fafc;
             overflow: hidden;
             background-image: 
-                radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%),
-                radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08), transparent 25%);
+                radial-gradient(circle at 15% 50%, rgba(68, 166, 204, 0.08), transparent 25%),
+                radial-gradient(circle at 85% 30%, rgba(28, 80, 112, 0.2), transparent 25%);
         }
 
-        .premium-grid {
+        .particle-canvas {
             position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-image: 
-                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
-            background-size: 50px 50px;
-            z-index: -1;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.2) 100%);
-            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.2) 100%);
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
         .glass-panel {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            background: rgba(28, 80, 112, 0.6); /* Dark Blue */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(68, 166, 204, 0.15); /* Light Blue border */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
         }
 
         .input-premium {
@@ -89,13 +85,13 @@
             font-family: 'JetBrains Mono', monospace;
         }
         .input-premium:focus {
-            border-color: #06b6d4;
-            box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.2);
-            background: rgba(6, 182, 212, 0.05);
+            border-color: #44a6cc;
+            box-shadow: 0 0 0 2px rgba(68, 166, 204, 0.2);
+            background: rgba(68, 166, 204, 0.05);
         }
 
         .btn-premium {
-            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+            background: linear-gradient(135deg, #44a6cc 0%, #1c5070 100%);
             color: white;
             padding: 14px 32px;
             border-radius: 8px;
@@ -104,11 +100,11 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
+            box-shadow: 0 4px 15px rgba(68, 166, 204, 0.3);
         }
         .btn-premium:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(6, 182, 212, 0.5);
+            box-shadow: 0 8px 25px rgba(68, 166, 204, 0.5);
         }
         
         .countdown-circle {
@@ -162,15 +158,44 @@
     </style>
 </head>
 <body>
-    <div class="premium-grid"></div>
-    <div id="root"></div>
+    <canvas id="particle-canvas" class="particle-canvas"></canvas>
+    <div id="root" style="position:relative;z-index:1;"></div>
+
+    <!-- Particle Network (plain JS, runs independently of React) -->
+    <script>
+        (function() {
+            const canvas = document.getElementById('particle-canvas');
+            const ctx = canvas.getContext('2d');
+            const PARTICLE_COUNT = 70, MAX_DIST = 140, COLOR = '68,166,204';
+            const resize = () => { canvas.width = innerWidth; canvas.height = innerHeight; };
+            resize();
+            window.addEventListener('resize', resize);
+            const P = Array.from({length: PARTICLE_COUNT}, () => ({
+                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
+                vx: (Math.random()-.5)*.5, vy: (Math.random()-.5)*.5, r: Math.random()*2+1
+            }));
+            (function draw() {
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                for(let i=0;i<P.length;i++) for(let j=i+1;j<P.length;j++) {
+                    const dx=P[i].x-P[j].x, dy=P[i].y-P[j].y, d=Math.hypot(dx,dy);
+                    if(d<MAX_DIST){ ctx.strokeStyle=`rgba(${COLOR},${(1-d/MAX_DIST)*.25})`; ctx.lineWidth=.8; ctx.beginPath(); ctx.moveTo(P[i].x,P[i].y); ctx.lineTo(P[j].x,P[j].y); ctx.stroke(); }
+                }
+                P.forEach(p=>{ ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fillStyle=`rgba(${COLOR},.6)`; ctx.fill(); p.x+=p.vx; p.y+=p.vy; if(p.x<0||p.x>canvas.width)p.vx*=-1; if(p.y<0||p.y>canvas.height)p.vy*=-1; });
+                requestAnimationFrame(draw);
+            })();
+        })();
+    </script>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
 
-        const CyberXLogo = ({ className = "h-20" }) => (
-            <div className={`flex flex-col items-center justify-center ${className} drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]`}>
-                <img src="bg-remove-logo.png" className="h-full object-contain filter brightness-110" alt="CyberX Logo" />
+        // ── Particle Network Background ──────────────────────────────────
+
+        const CTFLogos = ({ className = "h-16 md:h-28" }) => (
+            <div className={`flex flex-row items-center justify-center gap-4 md:gap-8 ${className} drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]`}>
+                <img src="images/bg-remove-logo.png" className="h-full w-auto object-contain filter brightness-110" alt="The Last footprint" />
+                <img src="images/ing-logo-removebg.png" className="h-[75%] md:h-[85%] w-auto object-contain filter brightness-110" alt="ING Logo" />
+                <img src="images/inosphere-logo-removebg.png" className="h-[75%] md:h-[85%] w-auto object-contain filter brightness-110" alt="Inosphere Logo" />
             </div>
         );
 
@@ -235,26 +260,25 @@
             }, [onComplete]);
             
             return (
-                <div className="flex flex-col items-center justify-center h-screen w-full fixed top-0 left-0 z-[100] bg-[#030712] overflow-hidden">
-                    {/* Background glow behind all elements */}
-                    <div className="absolute w-[600px] h-[600px] bg-[#06b6d4] rounded-full blur-[180px] opacity-10 animate-pulse-slow"></div>
+                <div className="flex flex-col items-center justify-center h-screen w-full fixed top-0 left-0 z-[100] overflow-hidden" style={{background: 'rgba(56,56,56,0.85)'}}>
+                    {/* Background glow overlay */}
+                    <div className="absolute w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#44a6cc] rounded-full blur-[100px] md:blur-[180px] opacity-10 animate-pulse-slow"></div>
                     
                     <div className="relative flex flex-col items-center justify-center">
                         {/* The Large Circular Progress Indicator */}
-                        <svg className="absolute w-[450px] h-[450px] md:w-[550px] md:h-[550px]" viewBox="0 0 100 100">
+                        <svg className="absolute w-[300px] h-[300px] md:w-[550px] md:h-[550px]" viewBox="0 0 100 100">
                             <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
-                            <circle cx="50" cy="50" r="48" fill="none" stroke="#06b6d4" strokeWidth="1" strokeLinecap="round" className="countdown-circle opacity-60" />
+                            <circle cx="50" cy="50" r="48" fill="none" stroke="#44a6cc" strokeWidth="1" strokeLinecap="round" className="countdown-circle opacity-60" />
                         </svg>
 
-                        {/* Central Content Stack */}
-                        <div className="z-10 flex flex-col items-center">
-                            <CyberXLogo className="h-28 mb-8" />
-                            <div className="h-px w-32 bg-gradient-to-r from-transparent via-cyber-accent to-transparent mb-6"></div>
-                            <p className="text-cyber-accent font-mono text-sm tracking-[0.5em] mb-4 uppercase opacity-60">Decryption Sequence</p>
-                            <h1 className="text-8xl font-mono font-bold text-white tracking-widest ml-4">
+                        {/* Timer info only — no logo */}
+                        <div className="z-10 flex flex-col items-center px-4">
+                            <div className="h-px w-32 bg-gradient-to-r from-transparent via-[#44a6cc] to-transparent mb-6"></div>
+                            <p className="text-[#44a6cc] font-mono text-xs md:text-sm tracking-[0.3em] md:tracking-[0.5em] mb-4 uppercase opacity-70 text-center">Decryption Sequence</p>
+                            <h1 className="text-6xl md:text-8xl font-mono font-bold text-white tracking-widest transition-all duration-300">
                                 00:{count < 10 ? '0' + count : count}
                             </h1>
-                            <p className="mt-4 font-mono text-[10px] text-slate-500 tracking-[0.2em] uppercase">Status: decrypting_winner_metadata... {Math.random().toString(36).substring(7).toUpperCase()}</p>
+                            <p className="mt-4 font-mono text-[8px] md:text-[10px] text-slate-400 tracking-[0.2em] uppercase text-center hidden md:block">Status: decrypting_winner_metadata... {Math.random().toString(36).substring(7).toUpperCase()}</p>
                         </div>
                     </div>
                 </div>
@@ -268,17 +292,17 @@
             let rankColor = "", medalName = "", rankTextClass = "";
             
             if (rank === 1) { 
-                cardClasses += " winner-1 order-2 md:-translate-y-12 z-20 scale-105"; 
+                cardClasses += " winner-1 order-1 md:order-2 md:-translate-y-12 z-20 md:scale-105"; 
                 rankColor = "#fbbf24"; 
                 medalName = "CHAMPION";
                 rankTextClass = "rank-1-text";
             } else if (rank === 2) { 
-                cardClasses += " winner-2 order-1 md:translate-y-8 z-10"; 
+                cardClasses += " winner-2 order-2 md:order-1 md:translate-y-8 z-10"; 
                 rankColor = "#94a3b8"; 
                 medalName = "RUNNER UP";
                 rankTextClass = "rank-2-text";
             } else { 
-                cardClasses += " winner-3 order-3 md:translate-y-16 z-10"; 
+                cardClasses += " winner-3 order-3 md:order-3 md:translate-y-16 z-10"; 
                 rankColor = "#b45309"; 
                 medalName = "2ND RUNNER UP";
                 rankTextClass = "rank-3-text";
@@ -314,13 +338,22 @@
             };
 
             return (
-                <div className="min-h-screen flex items-center justify-center p-4 relative z-10 w-full overflow-y-auto">
-                    <div className="glass-panel p-8 md:p-12 rounded-2xl max-w-5xl w-full relative z-20 my-12">
-                        <div className="flex flex-col md:flex-row items-center justify-between mb-12 pb-6 border-b border-white/10 gap-6">
-                            <CyberXLogo className="h-28" />
-                            <div className="text-right">
-                                <h1 className="text-2xl font-bold tracking-wider text-white">CTF AWARDS CONFIGURATION</h1>
-                                <p className="text-cyber-accent text-sm font-mono mt-1 opacity-80">SYS.ADMIN // SECURE CONNECTION</p>
+                <div className="min-h-screen flex flex-col justify-center items-center p-4 relative z-10 w-full overflow-y-auto py-12 md:py-4">
+                    <div className="glass-panel p-6 md:p-10 rounded-2xl max-w-4xl w-full relative z-20 my-6 md:my-12">
+                        {/* Header: logos left, title right */}
+                        <div className="flex flex-col items-center gap-4 mb-8 pb-6 border-b border-[#44a6cc]/20">
+                            {/* Logo cluster on dark pill for visibility */}
+                            <div className="bg-[#0d1f2e]/80 border border-[#44a6cc]/30 rounded-xl px-6 py-4 flex items-center justify-center gap-4 md:gap-8 w-full">
+                                <img src="images/bg-remove-logo.png" className="h-10 md:h-16 w-auto object-contain brightness-125" alt="The Last footprint" />
+                                <div className="w-px h-8 bg-[#44a6cc]/30"></div>
+                                <img src="images/ing-logo-removebg.png" className="h-8 md:h-12 w-auto object-contain brightness-125" alt="ING" />
+                                <div className="w-px h-8 bg-[#44a6cc]/30"></div>
+                                <img src="images/inosphere-logo-removebg.png" className="h-8 md:h-12 w-auto object-contain brightness-125" alt="Inosphere" />
+                            </div>
+                            {/* Title */}
+                            <div className="text-center mt-2">
+                                <h1 className="text-xl md:text-2xl font-bold tracking-wider text-white uppercase">The Last Footprint Awards</h1>
+                                <p className="text-[#44a6cc] text-xs md:text-sm font-mono mt-1 tracking-widest">SYS.ADMIN // SECURE CONNECTION</p>
                             </div>
                         </div>
 
@@ -403,13 +436,20 @@
             };
 
             return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-4 relative z-10 w-full overflow-hidden">
-                    <div className="absolute top-8 w-full flex flex-col items-center z-20">
-                        <CyberXLogo className="h-28 mb-6" />
-                        <div className="h-px w-64 bg-gradient-to-r from-transparent via-cyber-accent to-transparent opacity-50"></div>
-                        <p className="text-cyber-accent mt-4 font-mono text-sm tracking-[0.4em] uppercase opacity-80">Final Standings</p>
+                <div className="min-h-screen flex flex-col items-center justify-start md:justify-center p-4 relative z-10 w-full overflow-y-auto">
+                    {/* Header: logos + title */}
+                    <div className="relative md:absolute top-0 w-full flex flex-col items-center z-20 pt-8 pb-4 md:pt-6 mb-6 md:mb-0">
+                        <div className="bg-[#0d1f2e]/80 border border-[#44a6cc]/30 rounded-xl px-6 py-3 flex items-center justify-center gap-4 md:gap-8 mb-4">
+                            <img src="images/bg-remove-logo.png" className="h-8 md:h-12 w-auto object-contain brightness-125" alt="The Last footprint" />
+                            <div className="w-px h-6 bg-[#44a6cc]/30"></div>
+                            <img src="images/ing-logo-removebg.png" className="h-6 md:h-10 w-auto object-contain brightness-125" alt="ING" />
+                            <div className="w-px h-6 bg-[#44a6cc]/30"></div>
+                            <img src="images/inosphere-logo-removebg.png" className="h-6 md:h-10 w-auto object-contain brightness-125" alt="Inosphere" />
+                        </div>
+                        <div className="h-px w-48 md:w-64 bg-gradient-to-r from-transparent via-[#44a6cc] to-transparent opacity-50 mb-3"></div>
+                        <p className="text-[#44a6cc] font-mono text-xs md:text-sm tracking-[0.3em] uppercase opacity-90 text-center font-bold">The Last footprint — Final Standings</p>
                     </div>
-                    <div className="flex flex-col md:flex-row items-end justify-center gap-6 mt-32 w-full max-w-7xl h-auto md:h-[60vh] pb-12">
+                    <div className="flex flex-col md:flex-row items-center md:items-end justify-center gap-8 md:gap-6 w-full max-w-7xl h-auto md:h-[60vh] pb-12 mt-4 md:mt-40">
                         <WinnerCard rank={2} player={winners[2].player} delay={0} isRevealed={revealed[2]} />
                         <WinnerCard rank={1} player={winners[1].player} delay={0} isRevealed={revealed[1]} onAnimationEnd={triggerConfetti} />
                         <WinnerCard rank={3} player={winners[3].player} delay={0} isRevealed={revealed[3]} />

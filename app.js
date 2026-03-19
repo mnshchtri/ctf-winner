@@ -37,6 +37,20 @@ const UserIcon = ({ size = 24, color = "currentColor" }) => (
     </svg>
 );
 
+const EyeIcon = ({ size = 24, color = "currentColor" }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+    </svg>
+);
+
+const EyeOffIcon = ({ size = 24, color = "currentColor" }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+        <line x1="1" y1="1" x2="23" y2="23"></line>
+    </svg>
+);
+
 /* ── Countdown ─────────────────────────────────────────────────────── */
 const Countdown = ({ onComplete }) => {
     const [count, setCount] = useState(12);
@@ -69,8 +83,8 @@ const Countdown = ({ onComplete }) => {
     }, [onComplete]);
 
     return (
-        <div className="flex flex-col items-center justify-center h-screen w-full fixed top-0 left-0 z-[100] overflow-hidden" style={{background: 'rgba(56,56,56,0.85)'}}>
-            <div className="absolute w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#44a6cc] rounded-full blur-[100px] md:blur-[180px] opacity-10 animate-pulse-slow"></div>
+        <div className="flex flex-col items-center justify-center h-screen w-full fixed top-0 left-0 z-[100] overflow-hidden" style={{background: 'rgba(56,56,56,0.55)'}}>
+            <div className="absolute w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-[#44a6cc] rounded-full blur-[100px] md:blur-[180px] opacity-20 animate-pulse-slow"></div>
 
             <div className="relative flex flex-col items-center justify-center">
                 <svg className="absolute w-[300px] h-[300px] md:w-[550px] md:h-[550px]" viewBox="0 0 100 100">
@@ -137,8 +151,14 @@ const WinnerCard = ({ rank, player, delay, isRevealed, onAnimationEnd }) => {
 
 /* ── Admin Panel ───────────────────────────────────────────────────── */
 const AdminPanel = ({ winners, setWinners, onStart }) => {
+    const [showNames, setShowNames] = useState({ 1: false, 2: false, 3: false });
+
     const handleChange = (rank, value) => {
         setWinners(prev => ({ ...prev, [rank]: { ...prev[rank], player: value } }));
+    };
+
+    const toggleShow = (rank) => {
+        setShowNames(prev => ({ ...prev, [rank]: !prev[rank] }));
     };
 
     return (
@@ -172,11 +192,24 @@ const AdminPanel = ({ winners, setWinners, onStart }) => {
                             </h3>
                             <div className="space-y-2">
                                 <label className="block text-xs text-slate-400 font-mono tracking-wider">OPERATIVE ALIAS</label>
-                                <div className="relative">
+                                <div className="relative flex items-center">
                                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
                                         <UserIcon size={16} />
                                     </div>
-                                    <input type="text" className="input-premium pl-10" value={winners[rank].player} onChange={(e) => handleChange(rank, e.target.value)} placeholder="Enter alias..." />
+                                    <input 
+                                        type={showNames[rank] ? "text" : "password"}
+                                        className="input-premium pl-10 pr-10" 
+                                        value={winners[rank].player} 
+                                        onChange={(e) => handleChange(rank, e.target.value)} 
+                                        placeholder="Enter alias..." 
+                                    />
+                                    <button 
+                                        onClick={() => toggleShow(rank)}
+                                        className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-[#44a6cc] transition-colors focus:outline-none"
+                                        title={showNames[rank] ? "Hide alias" : "Show alias"}
+                                    >
+                                        {showNames[rank] ? <EyeOffIcon size={16} /> : <EyeIcon size={16} />}
+                                    </button>
                                 </div>
                             </div>
                         </div>
